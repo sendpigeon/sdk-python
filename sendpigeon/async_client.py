@@ -4,6 +4,7 @@ from ._http import AsyncHttpClient, ClientOptions
 from .resources.api_keys import AsyncApiKeys
 from .resources.domains import AsyncDomains
 from .resources.emails import AsyncEmails
+from .resources.suppressions import AsyncSuppressions
 from .resources.templates import AsyncTemplates
 from .types import (
     AttachmentInput,
@@ -61,6 +62,7 @@ class AsyncSendPigeon:
         self.templates = AsyncTemplates(self._http)
         self.domains = AsyncDomains(self._http)
         self.api_keys = AsyncApiKeys(self._http)
+        self.suppressions = AsyncSuppressions(self._http)
 
     async def close(self) -> None:
         """Close the HTTP client."""

@@ -4,6 +4,7 @@ from ._http import ClientOptions, SyncHttpClient
 from .resources.api_keys import SyncApiKeys
 from .resources.domains import SyncDomains
 from .resources.emails import SyncEmails
+from .resources.suppressions import SyncSuppressions
 from .resources.templates import SyncTemplates
 from .types import (
     AttachmentInput,
@@ -61,6 +62,7 @@ class SendPigeon:
         self.templates = SyncTemplates(self._http)
         self.domains = SyncDomains(self._http)
         self.api_keys = SyncApiKeys(self._http)
+        self.suppressions = SyncSuppressions(self._http)
 
     def close(self) -> None:
         """Close the HTTP client."""

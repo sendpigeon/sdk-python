@@ -183,3 +183,25 @@ class ApiKeyWithSecret(ApiKey):
     """API key with secret (only returned on creation)."""
 
     key: str = ""
+
+
+SuppressionReason = Literal["hard_bounce", "complaint"]
+
+
+@dataclass
+class Suppression:
+    """Suppressed email address."""
+
+    id: str
+    email: str
+    reason: SuppressionReason
+    created_at: str
+    source_email_id: str | None = None
+
+
+@dataclass
+class SuppressionListResponse:
+    """Response from listing suppressions."""
+
+    data: list[Suppression]
+    total: int

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+- Add Suppressions API (`suppressions.list`, `suppressions.delete`)
+
 ## 0.2.0
 
 - Add `email.opened` and `email.clicked` webhook events
