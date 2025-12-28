@@ -56,7 +56,7 @@ class TestSendPigeon:
             subject="Hello",
             html="<p>Hi</p>",
             text="Hi",
-            from_address="sender@domain.com",
+            from_="sender@domain.com",
             cc="cc@example.com",
             bcc="bcc@example.com",
             reply_to="reply@example.com",

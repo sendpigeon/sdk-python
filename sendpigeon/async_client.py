@@ -82,7 +82,7 @@ class AsyncSendPigeon:
         subject: str | None = None,
         html: str | None = None,
         text: str | None = None,
-        from_address: str | None = None,
+        from_: str | None = None,
         cc: str | list[str] | None = None,
         bcc: str | list[str] | None = None,
         reply_to: str | None = None,
@@ -103,7 +103,7 @@ class AsyncSendPigeon:
             subject: Email subject (required unless using template_id)
             html: HTML body content
             text: Plain text body content
-            from_address: Sender email (defaults to verified domain)
+            from_: Sender email (defaults to verified domain)
             cc: CC recipient(s)
             bcc: BCC recipient(s)
             reply_to: Reply-to address
@@ -124,7 +124,7 @@ class AsyncSendPigeon:
             subject=subject,
             html=html,
             text=text,
-            from_address=from_address,
+            from_=from_,
             cc=cc,
             bcc=bcc,
             reply_to=reply_to,

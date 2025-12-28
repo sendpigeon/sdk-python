@@ -20,7 +20,7 @@ def build_send_body(
     subject: str | None = None,
     html: str | None = None,
     text: str | None = None,
-    from_address: str | None = None,
+    from_: str | None = None,
     cc: str | list[str] | None = None,
     bcc: str | list[str] | None = None,
     reply_to: str | None = None,
@@ -35,8 +35,8 @@ def build_send_body(
     """Build the request body for sending an email."""
     body: dict = {"to": to}
 
-    if from_address:
-        body["from"] = from_address
+    if from_:
+        body["from"] = from_
     if subject:
         body["subject"] = subject
     if html:
@@ -91,8 +91,8 @@ def build_batch_emails(emails: list[BatchEmailInput] | list[dict]) -> list[dict]
 
         if data.get("to") is not None:
             api_email["to"] = data["to"]
-        if data.get("from_address") is not None:
-            api_email["from"] = data["from_address"]
+        if data.get("from_") is not None:
+            api_email["from"] = data["from_"]
         if data.get("subject") is not None:
             api_email["subject"] = data["subject"]
         if data.get("html") is not None:

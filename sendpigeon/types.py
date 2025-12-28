@@ -57,7 +57,7 @@ class BatchEmailInput:
     subject: str | None = None
     html: str | None = None
     text: str | None = None
-    from_address: str | None = None
+    from_: str | None = None
     cc: str | list[str] | None = None
     bcc: str | list[str] | None = None
     reply_to: str | None = None
