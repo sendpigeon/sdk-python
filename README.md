@@ -41,6 +41,20 @@ async with AsyncSendPigeon("sk_live_xxx") as client:
     )
 ```
 
+## Local Development
+
+Use the SendPigeon CLI to catch emails locally:
+
+```bash
+# Terminal 1: Start local server
+npx @sendpigeon-sdk/cli dev
+
+# Terminal 2: Run your app with dev mode
+SENDPIGEON_DEV=true python app.py
+```
+
+When `SENDPIGEON_DEV=true`, the SDK routes requests to `localhost:4100` instead of production.
+
 ## Features
 
 ### Send Email
