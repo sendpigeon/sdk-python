@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import os
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal
 
 import httpx
@@ -12,15 +13,26 @@ from .types import Result
 HttpMethod = Literal["GET", "POST", "PATCH", "DELETE"]
 
 DEFAULT_BASE_URL = "https://api.sendpigeon.dev"
+DEV_BASE_URL = "http://localhost:4100"
 DEFAULT_TIMEOUT = 30.0
 DEFAULT_MAX_RETRIES = 2
+
+
+def _resolve_base_url(base_url: str | None) -> str:
+    """Resolve base URL, checking for dev mode env var."""
+    if base_url:
+        return base_url
+    if os.environ.get("SENDPIGEON_DEV") in ("true", "1"):
+        print(f"\033[35m[SendPigeon]\033[0m Dev mode → {DEV_BASE_URL}")
+        return DEV_BASE_URL
+    return DEFAULT_BASE_URL
 
 
 @dataclass
 class ClientOptions:
     """Options for configuring the HTTP client."""
 
-    base_url: str = DEFAULT_BASE_URL
+    base_url: str = field(default_factory=lambda: _resolve_base_url(None))
     timeout: float = DEFAULT_TIMEOUT
     max_retries: int = DEFAULT_MAX_RETRIES
     debug: bool = False
