@@ -2,21 +2,32 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..types import Result, Template
+from ..types import Result, Template, TemplateVariable, TestTemplateResponse
 
 if TYPE_CHECKING:
     from .._http import AsyncHttpClient, SyncHttpClient
+
+
+def _parse_variable(data: dict) -> TemplateVariable:
+    """Parse API response into TemplateVariable."""
+    return TemplateVariable(
+        key=data["key"],
+        type=data["type"],
+        fallback_value=data.get("fallbackValue"),
+    )
 
 
 def _parse_template(data: dict) -> Template:
     """Parse API response into Template."""
     return Template(
         id=data["id"],
-        name=data["name"],
+        template_id=data["templateId"],
+        name=data.get("name"),
         subject=data["subject"],
         html=data.get("html"),
         text=data.get("text"),
-        variables=data.get("variables", []),
+        variables=[_parse_variable(v) for v in data.get("variables", [])],
+        status=data["status"],
         domain=data.get("domain"),
         created_at=data["createdAt"],
         updated_at=data["updatedAt"],
@@ -45,18 +56,24 @@ class SyncTemplates:
 
     def create(
         self,
-        name: str,
+        template_id: str,
         subject: str,
+        name: str | None = None,
         html: str | None = None,
         text: str | None = None,
+        variables: list[dict] | None = None,
         domain_id: str | None = None,
     ) -> Result[Template]:
         """Create a new template."""
-        body = {"name": name, "subject": subject}
+        body: dict = {"templateId": template_id, "subject": subject}
+        if name:
+            body["name"] = name
         if html:
             body["html"] = html
         if text:
             body["text"] = text
+        if variables:
+            body["variables"] = variables
         if domain_id:
             body["domainId"] = domain_id
 
@@ -72,9 +89,10 @@ class SyncTemplates:
         subject: str | None = None,
         html: str | None = None,
         text: str | None = None,
+        variables: list[dict] | None = None,
     ) -> Result[Template]:
         """Update a template."""
-        body = {}
+        body: dict = {}
         if name is not None:
             body["name"] = name
         if subject is not None:
@@ -83,6 +101,8 @@ class SyncTemplates:
             body["html"] = html
         if text is not None:
             body["text"] = text
+        if variables is not None:
+            body["variables"] = variables
 
         result = self._http.request("PATCH", f"/v1/templates/{id}", body=body)
         if result.error:
@@ -92,6 +112,37 @@ class SyncTemplates:
     def delete(self, id: str) -> Result[None]:
         """Delete a template."""
         return self._http.request("DELETE", f"/v1/templates/{id}")
+
+    def publish(self, id: str) -> Result[Template]:
+        """Publish a template."""
+        result = self._http.request("POST", f"/v1/templates/{id}/publish")
+        if result.error:
+            return Result(error=result.error)
+        return Result(data=_parse_template(result.data))
+
+    def unpublish(self, id: str) -> Result[Template]:
+        """Unpublish a template."""
+        result = self._http.request("POST", f"/v1/templates/{id}/unpublish")
+        if result.error:
+            return Result(error=result.error)
+        return Result(data=_parse_template(result.data))
+
+    def test(
+        self, id: str, to: str, variables: dict[str, str] | None = None
+    ) -> Result[TestTemplateResponse]:
+        """Send a test email using the template."""
+        body: dict = {"to": to}
+        if variables:
+            body["variables"] = variables
+
+        result = self._http.request("POST", f"/v1/templates/{id}/test", body=body)
+        if result.error:
+            return Result(error=result.error)
+        return Result(
+            data=TestTemplateResponse(
+                message=result.data["message"], email_id=result.data["emailId"]
+            )
+        )
 
 
 class AsyncTemplates:
@@ -116,18 +167,24 @@ class AsyncTemplates:
 
     async def create(
         self,
-        name: str,
+        template_id: str,
         subject: str,
+        name: str | None = None,
         html: str | None = None,
         text: str | None = None,
+        variables: list[dict] | None = None,
         domain_id: str | None = None,
     ) -> Result[Template]:
         """Create a new template."""
-        body = {"name": name, "subject": subject}
+        body: dict = {"templateId": template_id, "subject": subject}
+        if name:
+            body["name"] = name
         if html:
             body["html"] = html
         if text:
             body["text"] = text
+        if variables:
+            body["variables"] = variables
         if domain_id:
             body["domainId"] = domain_id
 
@@ -143,9 +200,10 @@ class AsyncTemplates:
         subject: str | None = None,
         html: str | None = None,
         text: str | None = None,
+        variables: list[dict] | None = None,
     ) -> Result[Template]:
         """Update a template."""
-        body = {}
+        body: dict = {}
         if name is not None:
             body["name"] = name
         if subject is not None:
@@ -154,6 +212,8 @@ class AsyncTemplates:
             body["html"] = html
         if text is not None:
             body["text"] = text
+        if variables is not None:
+            body["variables"] = variables
 
         result = await self._http.request("PATCH", f"/v1/templates/{id}", body=body)
         if result.error:
@@ -163,3 +223,34 @@ class AsyncTemplates:
     async def delete(self, id: str) -> Result[None]:
         """Delete a template."""
         return await self._http.request("DELETE", f"/v1/templates/{id}")
+
+    async def publish(self, id: str) -> Result[Template]:
+        """Publish a template."""
+        result = await self._http.request("POST", f"/v1/templates/{id}/publish")
+        if result.error:
+            return Result(error=result.error)
+        return Result(data=_parse_template(result.data))
+
+    async def unpublish(self, id: str) -> Result[Template]:
+        """Unpublish a template."""
+        result = await self._http.request("POST", f"/v1/templates/{id}/unpublish")
+        if result.error:
+            return Result(error=result.error)
+        return Result(data=_parse_template(result.data))
+
+    async def test(
+        self, id: str, to: str, variables: dict[str, str] | None = None
+    ) -> Result[TestTemplateResponse]:
+        """Send a test email using the template."""
+        body: dict = {"to": to}
+        if variables:
+            body["variables"] = variables
+
+        result = await self._http.request("POST", f"/v1/templates/{id}/test", body=body)
+        if result.error:
+            return Result(error=result.error)
+        return Result(
+            data=TestTemplateResponse(
+                message=result.data["message"], email_id=result.data["emailId"]
+            )
+        )

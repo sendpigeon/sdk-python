@@ -28,6 +28,7 @@ from .types import (
     ApiKeyWithSecret,
     AttachmentInput,
     AttachmentMeta,
+    BatchEmailInput,
     BatchEmailResult,
     DnsRecord,
     Domain,
@@ -52,7 +53,7 @@ from .webhooks import (
     verify_webhook,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.3.1"
 
 __all__ = [
     # Clients
@@ -68,6 +69,7 @@ __all__ = [
     "ApiKeyPermission",
     "AttachmentInput",
     "AttachmentMeta",
+    "BatchEmailInput",
     "SendEmailResponse",
     "BatchEmailResult",
     "SendBatchResponse",

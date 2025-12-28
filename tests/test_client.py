@@ -75,10 +75,12 @@ class TestSendPigeon:
             json=[
                 {
                     "id": "tmpl_1",
+                    "templateId": "welcome",
                     "name": "Welcome",
                     "subject": "Welcome!",
                     "html": "<p>Hi</p>",
-                    "variables": ["name"],
+                    "variables": [{"key": "name", "type": "string"}],
+                    "status": "draft",
                     "createdAt": "2024-01-01T00:00:00Z",
                     "updatedAt": "2024-01-01T00:00:00Z",
                 }
@@ -91,6 +93,10 @@ class TestSendPigeon:
         assert result.ok
         assert len(result.data) == 1
         assert result.data[0].name == "Welcome"
+        assert result.data[0].template_id == "welcome"
+        assert result.data[0].status == "draft"
+        assert len(result.data[0].variables) == 1
+        assert result.data[0].variables[0].key == "name"
 
     def test_domains_create(self, httpx_mock: HTTPXMock):
         httpx_mock.add_response(

@@ -35,6 +35,8 @@ EmailStatus = Literal[
 DomainStatus = Literal["pending", "verified", "temporary_failure", "failed"]
 ApiKeyMode = Literal["live", "test"]
 ApiKeyPermission = Literal["full_access", "sending"]
+TemplateStatus = Literal["draft", "published"]
+TemplateVariableType = Literal["string", "number", "boolean"]
 
 
 @dataclass
@@ -45,6 +47,28 @@ class AttachmentInput:
     content: str | None = None
     path: str | None = None
     content_type: str | None = None
+
+
+@dataclass
+class BatchEmailInput:
+    """Input for a single email in a batch send."""
+
+    to: str | list[str]
+    subject: str | None = None
+    html: str | None = None
+    text: str | None = None
+    from_address: str | None = None
+    cc: str | list[str] | None = None
+    bcc: str | list[str] | None = None
+    reply_to: str | None = None
+    template_id: str | None = None
+    variables: dict[str, str] | None = None
+    attachments: list[AttachmentInput] | None = None
+    tags: list[str] | None = None
+    metadata: dict[str, str] | None = None
+    headers: dict[str, str] | None = None
+    scheduled_at: str | None = None
+    idempotency_key: str | None = None
 
 
 @dataclass
@@ -110,18 +134,37 @@ class EmailDetail:
 
 
 @dataclass
+class TemplateVariable:
+    """Typed variable for email templates."""
+
+    key: str
+    type: TemplateVariableType
+    fallback_value: str | None = None
+
+
+@dataclass
 class Template:
     """Email template."""
 
     id: str
-    name: str
+    template_id: str
     subject: str
-    variables: list[str]
+    variables: list[TemplateVariable]
+    status: TemplateStatus
     created_at: str
     updated_at: str
+    name: str | None = None
     html: str | None = None
     text: str | None = None
     domain: dict | None = None
+
+
+@dataclass
+class TestTemplateResponse:
+    """Response from sending a test email."""
+
+    message: str
+    email_id: str
 
 
 @dataclass

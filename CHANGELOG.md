@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1
+
+- Added `BatchEmailInput` type for typed batch email sending
+- Reduced code duplication between sync/async clients (extracted to `_shared.py`)
+- Internal refactoring, no breaking changes
+
 ## 0.3.0
 
 - Add Suppressions API (`suppressions.list`, `suppressions.delete`)
