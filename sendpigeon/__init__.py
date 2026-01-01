@@ -41,6 +41,8 @@ from .types import (
     SendBatchResponse,
     SendEmailResponse,
     Template,
+    TrackingDefaults,
+    TrackingOptions,
 )
 from .webhooks import (
     InboundWebhookVerifyFailure,
@@ -53,7 +55,7 @@ from .webhooks import (
     verify_webhook,
 )
 
-__version__ = "0.3.1"
+__version__ = "0.4.0"
 
 __all__ = [
     # Clients
@@ -81,6 +83,8 @@ __all__ = [
     "DomainVerificationResult",
     "ApiKey",
     "ApiKeyWithSecret",
+    "TrackingDefaults",
+    "TrackingOptions",
     # Webhooks
     "verify_webhook",
     "verify_inbound_webhook",

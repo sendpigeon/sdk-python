@@ -11,6 +11,7 @@ from .types import (
     Result,
     SendBatchResponse,
     SendEmailResponse,
+    TrackingOptions,
 )
 
 
@@ -31,6 +32,7 @@ def build_send_body(
     metadata: dict[str, str] | None = None,
     headers: dict[str, str] | None = None,
     scheduled_at: str | None = None,
+    tracking: TrackingOptions | None = None,
 ) -> dict:
     """Build the request body for sending an email."""
     body: dict = {"to": to}
@@ -71,6 +73,14 @@ def build_send_body(
         body["headers"] = headers
     if scheduled_at:
         body["scheduled_at"] = scheduled_at
+    if tracking:
+        tracking_obj: dict = {}
+        if tracking.opens is not None:
+            tracking_obj["opens"] = tracking.opens
+        if tracking.clicks is not None:
+            tracking_obj["clicks"] = tracking.clicks
+        if tracking_obj:
+            body["tracking"] = tracking_obj
 
     return body
 
@@ -129,6 +139,18 @@ def build_batch_emails(emails: list[BatchEmailInput] | list[dict]) -> list[dict]
             api_email["scheduled_at"] = data["scheduled_at"]
         if data.get("idempotency_key") is not None:
             api_email["idempotencyKey"] = data["idempotency_key"]
+        if data.get("tracking") is not None:
+            tracking = data["tracking"]
+            if isinstance(tracking, TrackingOptions):
+                tracking_obj: dict = {}
+                if tracking.opens is not None:
+                    tracking_obj["opens"] = tracking.opens
+                if tracking.clicks is not None:
+                    tracking_obj["clicks"] = tracking.clicks
+                if tracking_obj:
+                    api_email["tracking"] = tracking_obj
+            elif isinstance(tracking, dict):
+                api_email["tracking"] = tracking
         api_emails.append(api_email)
     return api_emails
 
@@ -140,6 +162,7 @@ def parse_send_response(data: dict) -> SendEmailResponse:
         status=data["status"],
         scheduled_at=data.get("scheduled_at"),
         suppressed=data.get("suppressed"),
+        warnings=data.get("warnings"),
     )
 
 
@@ -151,6 +174,7 @@ def parse_batch_response(data: dict) -> SendBatchResponse:
             status=r["status"],
             id=r.get("id"),
             suppressed=r.get("suppressed"),
+            warnings=r.get("warnings"),
             error=r.get("error"),
         )
         for r in data["data"]

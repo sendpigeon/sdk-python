@@ -105,6 +105,27 @@ result = client.send_batch([
 print(f"Sent: {result.data.summary['sent']}, Failed: {result.data.summary['failed']}")
 ```
 
+### Tracking
+
+Enable open/click tracking per email (opt-in):
+
+```python
+from sendpigeon import TrackingOptions
+
+result = client.send(
+    to="user@example.com",
+    subject="Welcome!",
+    html='<p>Check out our <a href="https://example.com">site</a>!</p>',
+    tracking=TrackingOptions(opens=True, clicks=True),
+)
+
+# Response may include warnings if tracking is disabled at org level
+if result.data.warnings:
+    print(f"Warnings: {result.data.warnings}")
+```
+
+Configure organization defaults in Settings → Tracking.
+
 ### Domains
 
 ```python

@@ -7,12 +7,14 @@ from .resources.domains import SyncDomains
 from .resources.emails import SyncEmails
 from .resources.suppressions import SyncSuppressions
 from .resources.templates import SyncTemplates
+from .resources.tracking import SyncTracking
 from .types import (
     AttachmentInput,
     BatchEmailInput,
     Result,
     SendBatchResponse,
     SendEmailResponse,
+    TrackingOptions,
 )
 
 
@@ -64,6 +66,7 @@ class SendPigeon:
         self.domains = SyncDomains(self._http)
         self.api_keys = SyncApiKeys(self._http)
         self.suppressions = SyncSuppressions(self._http)
+        self.tracking = SyncTracking(self._http)
 
     def close(self) -> None:
         """Close the HTTP client."""
@@ -94,6 +97,7 @@ class SendPigeon:
         headers: dict[str, str] | None = None,
         scheduled_at: str | None = None,
         idempotency_key: str | None = None,
+        tracking: TrackingOptions | None = None,
     ) -> Result[SendEmailResponse]:
         """
         Send a transactional email.
@@ -115,6 +119,7 @@ class SendPigeon:
             headers: Custom email headers
             scheduled_at: ISO datetime to send (max 30 days ahead)
             idempotency_key: Unique key to prevent duplicate sends
+            tracking: Per-email tracking options (opens/clicks)
 
         Returns:
             Result containing SendEmailResponse or error
@@ -135,6 +140,7 @@ class SendPigeon:
             metadata=metadata,
             headers=headers,
             scheduled_at=scheduled_at,
+            tracking=tracking,
         )
 
         request_headers = {"Idempotency-Key": idempotency_key} if idempotency_key else None

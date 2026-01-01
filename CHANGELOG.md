@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.0
+
+- Per-email tracking: `tracking=TrackingOptions(opens=True, clicks=True)` in send requests
+- Export `TrackingOptions` type
+- Response `warnings` field for non-fatal issues (e.g., tracking disabled at org level)
+- Updated `TrackingDefaults` to use `tracking_enabled` master toggle
+
+## 0.3.2
+
+- Fixed version mismatch between pyproject.toml and __init__.py
+
 ## 0.3.1
 
 - Added `BatchEmailInput` type for typed batch email sending

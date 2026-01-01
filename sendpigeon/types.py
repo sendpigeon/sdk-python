@@ -40,6 +40,14 @@ TemplateVariableType = Literal["string", "number", "boolean"]
 
 
 @dataclass
+class TrackingOptions:
+    """Per-email tracking options. Tracking is opt-in per email."""
+
+    opens: bool | None = None
+    clicks: bool | None = None
+
+
+@dataclass
 class AttachmentInput:
     """Attachment for sending email."""
 
@@ -69,6 +77,7 @@ class BatchEmailInput:
     headers: dict[str, str] | None = None
     scheduled_at: str | None = None
     idempotency_key: str | None = None
+    tracking: TrackingOptions | None = None
 
 
 @dataclass
@@ -88,6 +97,7 @@ class SendEmailResponse:
     status: EmailStatus
     scheduled_at: str | None = None
     suppressed: list[str] | None = None
+    warnings: list[str] | None = None
 
 
 @dataclass
@@ -98,6 +108,7 @@ class BatchEmailResult:
     status: Literal["sent", "error"]
     id: str | None = None
     suppressed: list[str] | None = None
+    warnings: list[str] | None = None
     error: dict | None = None
 
 
@@ -248,3 +259,13 @@ class SuppressionListResponse:
 
     data: list[Suppression]
     total: int
+
+
+@dataclass
+class TrackingDefaults:
+    """Organization tracking defaults."""
+
+    tracking_enabled: bool
+    privacy_mode: bool
+    webhook_on_every_open: bool
+    webhook_on_every_click: bool
