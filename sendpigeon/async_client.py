@@ -3,6 +3,8 @@ from __future__ import annotations
 from ._http import AsyncHttpClient, ClientOptions
 from ._shared import build_batch_emails, build_send_body, parse_batch_response, parse_send_response
 from .resources.api_keys import AsyncApiKeys
+from .resources.broadcasts import AsyncBroadcasts
+from .resources.contacts import AsyncContacts
 from .resources.domains import AsyncDomains
 from .resources.emails import AsyncEmails
 from .resources.suppressions import AsyncSuppressions
@@ -67,6 +69,8 @@ class AsyncSendPigeon:
         self.api_keys = AsyncApiKeys(self._http)
         self.suppressions = AsyncSuppressions(self._http)
         self.tracking = AsyncTracking(self._http)
+        self.contacts = AsyncContacts(self._http)
+        self.broadcasts = AsyncBroadcasts(self._http)
 
     async def close(self) -> None:
         """Close the HTTP client."""

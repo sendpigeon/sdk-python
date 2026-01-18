@@ -269,3 +269,172 @@ class TrackingDefaults:
     privacy_mode: bool
     webhook_on_every_open: bool
     webhook_on_every_click: bool
+
+
+# Contacts
+ContactStatus = Literal["ACTIVE", "UNSUBSCRIBED", "BOUNCED", "COMPLAINED"]
+
+
+@dataclass
+class Contact:
+    """Contact in broadcast audience."""
+
+    id: str
+    email: str
+    fields: dict
+    tags: list[str]
+    status: ContactStatus
+    created_at: str
+    updated_at: str
+    unsubscribed_at: str | None = None
+    bounced_at: str | None = None
+    complained_at: str | None = None
+
+
+@dataclass
+class ContactListResponse:
+    """Response from listing contacts."""
+
+    data: list[Contact]
+    total: int
+
+
+@dataclass
+class AudienceStats:
+    """Audience statistics."""
+
+    total: int
+    active: int
+    unsubscribed: int
+    bounced: int
+    complained: int
+
+
+@dataclass
+class BatchContactResult:
+    """Result from batch contact operation."""
+
+    created: int
+    updated: int
+    failed: list[dict]
+
+
+# Broadcasts
+BroadcastStatus = Literal["DRAFT", "SCHEDULED", "SENDING", "SENT", "CANCELLED", "FAILED"]
+RecipientStatus = Literal["pending", "sent", "delivered", "bounced", "complained", "failed"]
+
+
+@dataclass
+class BroadcastStats:
+    """Broadcast delivery statistics."""
+
+    total_recipients: int
+    sent_count: int
+    delivered_count: int
+    opened_count: int
+    clicked_count: int
+    bounced_count: int
+    complained_count: int
+    unsubscribed_count: int
+
+
+@dataclass
+class Broadcast:
+    """Broadcast campaign."""
+
+    id: str
+    name: str
+    subject: str
+    from_name: str
+    from_email: str
+    tags: list[str]
+    status: BroadcastStatus
+    stats: BroadcastStats
+    created_at: str
+    updated_at: str
+    preview_text: str | None = None
+    html_content: str | None = None
+    content: dict | None = None
+    text_content: str | None = None
+    reply_to: str | None = None
+    physical_address: str | None = None
+    scheduled_at: str | None = None
+    sent_at: str | None = None
+    completed_at: str | None = None
+
+
+@dataclass
+class BroadcastListResponse:
+    """Response from listing broadcasts."""
+
+    data: list[Broadcast]
+    total: int
+
+
+@dataclass
+class BroadcastRecipient:
+    """Recipient of a broadcast."""
+
+    id: str
+    contact_id: str
+    email: str
+    status: RecipientStatus
+    created_at: str
+    sent_at: str | None = None
+    delivered_at: str | None = None
+    opened_at: str | None = None
+    clicked_at: str | None = None
+    bounced_at: str | None = None
+    complained_at: str | None = None
+    unsubscribed_at: str | None = None
+
+
+@dataclass
+class RecipientListResponse:
+    """Response from listing recipients."""
+
+    data: list[BroadcastRecipient]
+    total: int
+
+
+@dataclass
+class TestBroadcastResponse:
+    """Response from sending a test broadcast email."""
+
+    success: bool
+    message: str
+
+
+@dataclass
+class OpensOverTime:
+    """Opens aggregated by hour."""
+
+    hour: str
+    opens: int
+
+
+@dataclass
+class LinkPerformance:
+    """Click performance for a link."""
+
+    url: str
+    clicks: int
+    unique_clicks: int
+
+
+@dataclass
+class BroadcastAnalytics:
+    """Broadcast analytics data."""
+
+    opens_over_time: list[OpensOverTime]
+    link_performance: list[LinkPerformance]
+
+
+@dataclass
+class BroadcastTargeting:
+    """Tag-based targeting for broadcasts."""
+
+    include_tags: list[str] | None = None
+    """Only send to contacts with ANY of these tags. Empty = all active contacts."""
+    exclude_tags: list[str] | None = None
+    """Exclude contacts with ANY of these tags."""

@@ -3,6 +3,8 @@ from __future__ import annotations
 from ._http import ClientOptions, SyncHttpClient
 from ._shared import build_batch_emails, build_send_body, parse_batch_response, parse_send_response
 from .resources.api_keys import SyncApiKeys
+from .resources.broadcasts import SyncBroadcasts
+from .resources.contacts import SyncContacts
 from .resources.domains import SyncDomains
 from .resources.emails import SyncEmails
 from .resources.suppressions import SyncSuppressions
@@ -67,6 +69,8 @@ class SendPigeon:
         self.api_keys = SyncApiKeys(self._http)
         self.suppressions = SyncSuppressions(self._http)
         self.tracking = SyncTracking(self._http)
+        self.contacts = SyncContacts(self._http)
+        self.broadcasts = SyncBroadcasts(self._http)
 
     def close(self) -> None:
         """Close the HTTP client."""

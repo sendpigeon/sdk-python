@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0
+
+- Add Contacts API (`contacts.list`, `create`, `batch`, `get`, `update`, `delete`, `unsubscribe`, `resubscribe`, `stats`, `tags`)
+- Add Broadcasts API (`broadcasts.list`, `create`, `get`, `update`, `delete`, `send`, `schedule`, `cancel`, `test`, `recipients`, `analytics`)
+- Broadcast targeting: `include_tags` and `exclude_tags` options
+- Both sync and async clients supported
+
 ## 0.4.0
 
 - Per-email tracking: `tracking=TrackingOptions(opens=True, clicks=True)` in send requests
